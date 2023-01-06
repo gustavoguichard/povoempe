@@ -2,6 +2,7 @@ import { useLoaderData } from '@remix-run/react'
 import { parse } from 'node-html-parser'
 import { cacheHeader } from 'pretty-cache-header'
 import type { HeadersFunction } from '@remix-run/node'
+import { json } from '@remix-run/node'
 import { getLatestSentCampaign } from '~/services/mailchimp'
 
 export const headers: HeadersFunction = () => ({
@@ -28,11 +29,11 @@ export const loader = async () => {
       root.querySelector('body > center')?.toString() ?? ''
     ).replace(/Você está.+\./g, '')
 
-    return new Response(body, { headers: res.headers })
+    return json(body)
   } catch (error) {
     console.error(error)
 
-    throw new Response('Not found', { status: 404 })
+    throw json('Not found', 404)
   }
 }
 
