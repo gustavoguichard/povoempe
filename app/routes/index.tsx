@@ -29,7 +29,10 @@ export const loader = async () => {
       root.querySelector('body > center')?.toString() ?? ''
     ).replace(/Você está.+\./g, '')
 
-    return json(body)
+    return json({
+      styles: root.querySelector('style')?.toString(),
+      body,
+    })
   } catch (error) {
     console.error(error)
 
@@ -38,6 +41,11 @@ export const loader = async () => {
 }
 
 export default function () {
-  const data = useLoaderData()
-  return <div dangerouslySetInnerHTML={{ __html: data }} />
+  const { body, styles } = useLoaderData<typeof loader>()
+  return (
+    <>
+      {styles && <style dangerouslySetInnerHTML={{ __html: styles }} />}
+      <div dangerouslySetInnerHTML={{ __html: body }} />
+    </>
+  )
 }
